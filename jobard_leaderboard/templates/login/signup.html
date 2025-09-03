@@ -1,0 +1,37 @@
+{% extends "login/base.html" %}
+{% block title %}Inscription{% endblock %}
+{% block content %}
+<div class="row justify-content-center">
+  <div class="col-md-6">
+    <div class="card shadow-sm">
+      <div class="card-body p-4">
+        <h1 class="h4 mb-3 text-center">Créer un compte</h1>
+        <form method="post" novalidate>
+          {% csrf_token %}
+          {{ form.non_field_errors }}
+          <div class="mb-3">
+            {{ form.username.label_tag }}
+            {{ form.username }}
+          </div>
+          <div class="mb-3">
+            {{ form.email.label_tag }}
+            {{ form.email }}
+          </div>
+          <div class="mb-3">
+            {{ form.password1.label_tag }}
+            {{ form.password1 }}
+          </div>
+          <div class="mb-3">
+            {{ form.password2.label_tag }}
+            {{ form.password2 }}
+          </div>
+          <button class="btn btn-success w-100" type="submit">S’inscrire</button>
+        </form>
+        <p class="text-center mt-3">
+          Déjà un compte ? <a href="{% url 'login:login' %}">Connecte-toi</a>
+        </p>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
