@@ -1,6 +1,6 @@
 {% extends "leaderboard/admin_dashboard.html" %}
 
-{% block content %}
+{% block admin_content %}
 <h2>Gestion des utilisateurs</h2>
 <table class="table table-striped">
   <thead>
@@ -8,6 +8,7 @@
       <th>Nom</th>
       <th>Email</th>
       <th>Admin</th>
+      <th>Superuser</th>
     </tr>
   </thead>
   <tbody>
@@ -16,6 +17,10 @@
         <td>{{ user.username }}</td>
         <td>{{ user.email }}</td>
         <td>{% if user.is_staff %}✅{% else %}❌{% endif %}</td>
+        <td>{% if user.is_superuser %}✅{% else %}❌{% endif %}</td>
+         <td>
+            <a href="#">Modifier</a>
+        </td>
       </tr>
     {% endfor %}
   </tbody>
