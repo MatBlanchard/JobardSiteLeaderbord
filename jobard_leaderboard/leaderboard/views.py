@@ -1,9 +1,7 @@
 from django.contrib.auth.decorators import login_required, user_passes_test
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth import get_user_model
-from django.contrib import messages
-from .models import Category, Car, Class
-from .forms import CategoryForm, ClassSelectionForm
+from .models import Campaign, Car, Layout
 
 User = get_user_model()
 
@@ -13,9 +11,7 @@ def staff_required(view_func):
 @login_required
 @staff_required
 def admin_dashboard(request):
-    User = get_user_model()
-    users = User.objects.all()
-    return render(request, "leaderboard/admin_dashboard.html", {"users": users})
+    return render(request, "leaderboard/admin_dashboard.html")
 
 
 @login_required
@@ -29,41 +25,47 @@ def manage_users(request):
 
 @login_required
 @staff_required
-def manage_categories(request):
-    classes = Class.objects.prefetch_related("cars").all()
-    return render(request, "leaderboard/manage_categories.html", {
-        "classes": classes,
-        "active_tab": "categories"
+def manage_campaigns(request):
+    campaigns = Campaign.objects.all().order_by("name")
+
+    if request.method == "POST":
+        name = request.POST.get("name")
+        if name:
+            Campaign.objects.create(name=name)
+            return redirect("manage_campaigns")
+
+    return render(request, "leaderboard/manage_campaigns.html", {
+        "campaigns": campaigns,
+        "active_tab": "campaigns"
+    })
+
+
+@login_required
+@staff_required
+def campaign_detail(request, campaign_id):
+    campaign = get_object_or_404(Campaign, pk=campaign_id)
+    cars = Car.objects.all().order_by("name")
+    layouts = Layout.objects.select_related("track").all().order_by("track__name", "name")
+
+    if request.method == "POST":
+        selected_cars = request.POST.get("cars", "").split(",")
+        selected_layouts = request.POST.get("layouts", "").split(",")
+
+        campaign.cars.set([c for c in selected_cars if c])
+        campaign.layouts.set([l for l in selected_layouts if l])
+        campaign.save()
+        return redirect("campaign_detail", campaign_id=campaign.id)
+
+    return render(request, "leaderboard/campaign_detail.html", {
+        "campaign": campaign,
+        "cars": cars,
+        "layouts": layouts
     })
 
 @login_required
 @staff_required
-def manage_categories(request):
+def delete_campaign(request, campaign_id):
     if request.method == "POST":
-        category_name = request.POST.get("category_name")
-        selected_classes = request.POST.getlist("classes")
-        selected_cars = request.POST.getlist("cars")
-
-        if category_name:
-            category = Category.objects.create(name=category_name)
-
-            # Ajouter toutes les voitures des classes cochées
-            if selected_classes:
-                cars_from_classes = Car.objects.filter(class_ref_id__in=selected_classes)
-                category.cars.add(*cars_from_classes)
-
-            # Ajouter les voitures sélectionnées individuellement
-            if selected_cars:
-                cars = Car.objects.filter(id__in=selected_cars)
-                category.cars.add(*cars)
-
-            messages.success(request, f"Catégorie '{category_name}' créée ✅")
-            return redirect("manage_categories")
-
-    classes = Class.objects.prefetch_related("cars").all()
-    categories = Category.objects.all()
-
-    return render(request, "leaderboard/manage_categories.html", {
-        "classes": classes,
-        "categories": categories,
-    })
+        campaign = get_object_or_404(Campaign, id=campaign_id)
+        campaign.delete()
+    return redirect("manage_campaigns")

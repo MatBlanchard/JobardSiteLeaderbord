@@ -1,0 +1,28 @@
+{% extends "leaderboard/admin_dashboard.html" %}
+
+{% block content %}
+<h2>Campagnes</h2>
+
+<form method="post" class="mb-3">
+  {% csrf_token %}
+  <input type="text" name="name" placeholder="Nom de la campagne" required>
+  <button type="submit" class="btn btn-success">Créer</button>
+</form>
+
+<ul>
+  {% for campaign in campaigns %}
+    <li>
+      {{ campaign.name }} ({{ campaign.cars.count }} voitures) ({{ campaign.layouts.count }} circuits)
+      <a href="{% url 'campaign_detail' campaign.id %}" class="btn btn-primary">Gérer</a>
+        <form method="post" action="{% url 'delete_campaign' campaign.id %}" style="display:inline;">
+            {% csrf_token %}
+            <button type="submit" class="btn">
+                🗑️
+            </button>
+        </form>
+    </li>
+  {% empty %}
+    <li>Aucune campagne</li>
+  {% endfor %}
+</ul>
+{% endblock %}
