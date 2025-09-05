@@ -32,3 +32,11 @@ class Layout(models.Model):
 
     def __str__(self):
         return f"{self.track_ref.name} - {self.name}"
+
+
+class Category(models.Model):
+    name = models.CharField(max_length=255, unique=True)
+    cars = models.ManyToManyField("Car", related_name="categories")
+
+    def __str__(self):
+        return self.name

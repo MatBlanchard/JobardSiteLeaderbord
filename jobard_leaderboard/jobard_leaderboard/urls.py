@@ -5,5 +5,6 @@ from login import views
 urlpatterns = [
     path("admin/", admin.site.urls),
     path("", include(("login.urls", "login"), namespace="login")),
-path("signup/", views.signup_view, name="signup"),
+    path("signup/", views.signup_view, name="signup"),
+    path("", include("leaderboard.urls"))
 ]

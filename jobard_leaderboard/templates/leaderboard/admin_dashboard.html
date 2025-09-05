@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h2>Admin</h2>
+    {% if request.user.is_staff %}
+    <div class="bg-light border-bottom mb-3">
+      <ul class="nav nav-tabs container">
+        <li class="nav-item">
+          <a class="nav-link {% if active_tab == 'users' %}active{% endif %}" href="{% url 'manage_users' %}">Utilisateurs</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link {% if active_tab == 'categories' %}active{% endif %}" href="{% url 'manage_categories' %}">Catégories</a>
+        </li>
+      </ul>
+    </div>
+    {% endif %}
+{% endblock %}
