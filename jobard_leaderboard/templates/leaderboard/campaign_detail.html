@@ -1,8 +1,9 @@
 {% extends "leaderboard/admin_dashboard.html" %}
-
+{% load static %}
 {% block content %}
 <h2>Gérer la campagne : {{ campaign.name }}</h2>
 
+<input type="hidden" id="campaign-id" value="{{ campaign.id }}">
 <form method="post" id="campaign-form">
   {% csrf_token %}
 
@@ -64,50 +65,5 @@
 
   <button type="submit" class="btn btn-success mt-3">Sauvegarder</button>
 </form>
-
-<script>
-document.addEventListener("DOMContentLoaded", () => {
-  function makeDraggable() {
-    const draggables = document.querySelectorAll(".draggable");
-    const droppables = document.querySelectorAll(".droppable");
-
-    draggables.forEach(el => {
-      el.addEventListener("dragstart", e => {
-        e.dataTransfer.setData("text/plain", e.target.dataset.id);
-        e.dataTransfer.setData("text/html", e.target.outerHTML);
-        setTimeout(() => e.target.style.display = "none", 0);
-      });
-
-      el.addEventListener("dragend", e => e.target.style.display = "block");
-    });
-
-    droppables.forEach(dropzone => {
-      dropzone.addEventListener("dragover", e => e.preventDefault());
-      dropzone.addEventListener("drop", e => {
-        e.preventDefault();
-        const html = e.dataTransfer.getData("text/html");
-        const id = e.dataTransfer.getData("text/plain");
-        if (![...dropzone.children].some(li => li.dataset.id === id)) {
-          dropzone.insertAdjacentHTML("beforeend", html);
-          makeDraggable(); // rebind events
-        }
-        document.querySelectorAll(`[data-id="${id}"]`).forEach((el, i) => {
-          if (i < document.querySelectorAll(`[data-id="${id}"]`).length - 1) el.remove();
-        });
-        updateHiddenInputs();
-      });
-    });
-  }
-
-  function updateHiddenInputs() {
-    document.getElementById("cars-input").value =
-      [...document.querySelectorAll("#cars-selected li")].map(li => li.dataset.id).join(",");
-    document.getElementById("layouts-input").value =
-      [...document.querySelectorAll("#layouts-selected li")].map(li => li.dataset.id).join(",");
-  }
-
-  makeDraggable();
-  updateHiddenInputs();
-});
-</script>
+<script src="{% static 'leaderboard/js/campaign.js' %}"></script>
 {% endblock %}

@@ -83,7 +83,7 @@ DATABASES = {
         'ENGINE': 'django.db.backends.postgresql',
         'NAME': 'jobard_leaderboard',
         'USER': 'jobard_user',
-        'PASSWORD': 'MesPneus:14P!',
+        'PASSWORD': 'Motdepasse72!',
         'HOST': 'localhost',
         'PORT': '5432',
     }

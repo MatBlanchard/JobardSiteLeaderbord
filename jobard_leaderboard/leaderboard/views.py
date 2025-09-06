@@ -2,6 +2,9 @@ from django.contrib.auth.decorators import login_required, user_passes_test
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth import get_user_model
 from .models import Campaign, Car, Layout
+from django.http import JsonResponse
+from django.views.decorators.http import require_POST
+import json
 
 User = get_user_model()
 
@@ -69,3 +72,18 @@ def delete_campaign(request, campaign_id):
         campaign = get_object_or_404(Campaign, id=campaign_id)
         campaign.delete()
     return redirect("manage_campaigns")
+
+@require_POST
+def update_campaign_items(request, campaign_id):
+    campaign = get_object_or_404(Campaign, id=campaign_id)
+
+    data = json.loads(request.body)
+
+    car_ids = data.get("cars", [])
+    layout_ids = data.get("layouts", [])
+
+    # Mise à jour ManyToMany
+    campaign.cars.set(Car.objects.filter(id__in=car_ids))
+    campaign.layouts.set(Layout.objects.filter(id__in=layout_ids))
+
+    return JsonResponse({"success": True})
