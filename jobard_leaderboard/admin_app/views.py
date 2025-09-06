@@ -14,14 +14,14 @@ def staff_required(view_func):
 @login_required
 @staff_required
 def admin_dashboard(request):
-    return render(request, "leaderboard/admin_dashboard.html")
+    return render(request, "admin_app/admin_dashboard.html")
 
 
 @login_required
 @staff_required
 def manage_users(request):
     users = User.objects.all()
-    return render(request, "leaderboard/manage_users.html", {
+    return render(request, "admin_app/manage_users.html", {
         "users": users,
         "active_tab": "users"
     })
@@ -37,7 +37,7 @@ def manage_campaigns(request):
             Campaign.objects.create(name=name)
             return redirect("manage_campaigns")
 
-    return render(request, "leaderboard/manage_campaigns.html", {
+    return render(request, "admin_app/manage_campaigns.html", {
         "campaigns": campaigns,
         "active_tab": "campaigns"
     })
@@ -59,7 +59,7 @@ def campaign_detail(request, campaign_id):
         campaign.save()
         return redirect("campaign_detail", campaign_id=campaign.id)
 
-    return render(request, "leaderboard/campaign_detail.html", {
+    return render(request, "admin_app/campaign_detail.html", {
         "campaign": campaign,
         "cars": cars,
         "layouts": layouts

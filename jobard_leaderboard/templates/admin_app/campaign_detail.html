@@ -1,4 +1,4 @@
-{% extends "leaderboard/admin_dashboard.html" %}
+{% extends "admin_app/admin_dashboard.html" %}
 {% load static %}
 {% block content %}
 <h2>Gérer la campagne : {{ campaign.name }}</h2>
@@ -65,5 +65,9 @@
 
   <button type="submit" class="btn btn-success mt-3">Sauvegarder</button>
 </form>
-<script src="{% static 'leaderboard/js/campaign.js' %}"></script>
+<script src="{% static 'admin_app/js/campaign.js' %}"></script>
+<style>
+  .droppable { min-height: 10000px; padding: 8px; border: 2px dashed rgba(0,0,0,.15); border-radius: 6px; }
+  .droppable:empty::before { content: "Déposez ici"; opacity: .6; font-size: .9rem; }
+</style>
 {% endblock %}

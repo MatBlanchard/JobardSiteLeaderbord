@@ -37,7 +37,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'login',
-    'leaderboard'
+    'admin_app'
 ]
 
 MIDDLEWARE = [
