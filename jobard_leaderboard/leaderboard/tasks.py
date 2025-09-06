@@ -26,7 +26,7 @@ def update_data():
                     id=car_id,
                     defaults={
                         "name": car_info.get("Name", "Unkown"),
-                        "class_ref": class_car
+                        "carClass": class_car
                     }
                 )
             # --- Tracks ---
@@ -44,7 +44,7 @@ def update_data():
                     id=layout_id,
                     defaults={
                         "name": layout_info.get("Name", "Unknown"),
-                        "track_ref": track
+                        "track": track
                     }
                 )
 
