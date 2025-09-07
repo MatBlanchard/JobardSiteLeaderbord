@@ -1,6 +1,27 @@
-{% extends "base.html" %} {# change si nécessaire #}
-{% load static %}
+{% extends "base.html" %}
 {% block content %}
 <h1>{{ campaign.name }}</h1>
-<p>{{ campaign.layouts.all }}</p>
+
+<table>
+  <thead>
+    <tr>
+      <th>Layout</th>
+      <th>Record du monde</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for layout in layouts %}
+      <tr>
+        <td>{{ layout }}</td>
+        <td>
+          {% if layout.best_laptime %}
+            {{ layout.best_laptime.formatted_time}}
+          {% else %}
+            —
+          {% endif %}
+        </td>
+      </tr>
+    {% endfor %}
+  </tbody>
+</table>
 {% endblock %}
