@@ -18,7 +18,7 @@ def ms_from_laptime_str(s: str) -> int | None:
         return None
     minutes = int(m.group(1) or 0)
     seconds = int(m.group(2))
-    ms = int((m.group(3) or '0').ljust(3, '0'))  # '17' -> '170', '980' -> '980'
+    ms = int((m.group(3) or '0').ljust(3, '0'))
     return minutes * 60_000 + seconds * 1_000 + ms
 
 def get_json(layout_id, car_id):
