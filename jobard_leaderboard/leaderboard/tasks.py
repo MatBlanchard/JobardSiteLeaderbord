@@ -57,7 +57,6 @@ def update_data():
                             "lap_time_ms": ms_from_laptime_str(r["laptime"])
                         }
                     )
-                    laptime_obj.campaigns.add(campaign)
     print("✅ Données mises à jour laptimes et drivers")
 
 def background_updater():

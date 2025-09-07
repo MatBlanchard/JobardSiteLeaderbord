@@ -14,7 +14,6 @@ class LapTime(models.Model):
     layout = models.ForeignKey(Layout, on_delete=models.CASCADE, related_name='lap_times')
     car = models.ForeignKey(Car, on_delete=models.CASCADE,related_name='lap_times')
     lap_time_ms = models.PositiveIntegerField(help_text="Temps au tour en millisecondes")
-    campaigns = models.ManyToManyField(Campaign,related_name='lap_times',blank=True)
 
     class Meta:
         # Unicité du triplet driver/layout/car

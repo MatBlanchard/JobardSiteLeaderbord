@@ -1,9 +1,22 @@
-{% extends "base.html" %}
+{% extends "base.html" %} {# change si nécessaire #}
+{% load static %}
 {% block content %}
-<div class="card shadow-sm">
-  <div class="card-body">
-    <h1 class="h5 mb-2">Tableau de bord</h1>
-    <p>Tu es connecté en tant que <strong>{{ user.username }}</strong>.</p>
+<div class="container my-4">
+  <div class="d-flex align-items-center justify-content-between mb-3">
+    <h1 class="h3 m-0">Campagnes</h1>
   </div>
+
+  <ul>
+    {% for campaign in campaigns %}
+      <li>
+        <a href="{% url 'leaderboard:campaign_detail' campaign.id %}"> {{ campaign.name }}
+          ({{ campaign.cars.count }} voitures)
+          ({{ campaign.layouts.count }} circuits)
+        </a>
+      </li>
+    {% empty %}
+      <li>Aucune campagne trouvée</li>
+    {% endfor %}
+  </ul>
 </div>
 {% endblock %}
