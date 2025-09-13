@@ -5,6 +5,8 @@ from .models import Driver, LapTime
 import requests
 import json
 import re
+from datetime import timedelta
+from django.utils import timezone
 
 COUNT = 1500
 DRIVER_ID_RE = re.compile(r'/users/info/(\d+)(?:/|[?#]|$)')
@@ -31,6 +33,7 @@ def get_json(layout_id, car_id):
         return ""
 
 def update_data():
+    now = timezone.now()
     campaigns = Campaign.objects.all()
     for campaign in campaigns:
         layouts = campaign.layouts.all()
@@ -46,18 +49,26 @@ def update_data():
                     driver_obj, _created = Driver.objects.update_or_create(
                         id=driver_id,
                         defaults={
-                            "name":driver_name
+                            "name": driver_name,
+                            "date_maj": now
                         }
                     )
-                    laptime_obj, _created= LapTime.objects.update_or_create(
+                    LapTime.objects.update_or_create(
                         driver=driver_obj,
                         layout=layout,
                         car=car,
                         defaults={
-                            "lap_time_ms": ms_from_laptime_str(r["laptime"])
+                            "lap_time_ms": ms_from_laptime_str(r["laptime"]),
+                            "date_maj": now
                         }
                     )
-    print("✅ Données mises à jour laptimes et drivers")
+    cutoff = now - timedelta(hours=24)
+
+    deleted_laps, _ = LapTime.objects.filter(date_maj__lt=cutoff).delete()
+    deleted_drivers, _ = Driver.objects.filter(date_maj__lt=cutoff).delete()
+
+    print(f"✅ Données mises à jour laptimes et drivers — purge: "
+          f"{deleted_laps} tours, {deleted_drivers} pilotes supprimés")
 
 def background_updater():
     while True:

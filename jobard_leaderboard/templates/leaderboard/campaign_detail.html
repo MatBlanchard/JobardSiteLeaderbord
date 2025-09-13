@@ -5,17 +5,48 @@
 <table>
   <thead>
     <tr>
-      <th>Layout</th>
+      <th>Circuit</th>
+      <th>Joueurs</th>
       <th>Record du monde</th>
+      <th>Mon temps</th>
+      <th>Medaille</th>
+      <th>Prochaine médaille</th>
     </tr>
   </thead>
   <tbody>
     {% for layout in layouts %}
       <tr>
         <td>{{ layout }}</td>
+        <td>{{ layout.player_count|default:0 }}</td>
         <td>
           {% if layout.best_laptime %}
             {{ layout.best_laptime.formatted_time}}
+          {% else %}
+            —
+          {% endif %}
+        </td>
+        <td>
+          {% if layout.best_user_laptime %}
+            {{ layout.best_user_laptime.formatted_time}}
+          {% else %}
+            —
+          {% endif %}
+        </td>
+        <td>
+          {% if layout.best_medal %}
+            {% if layout.best_medal.image %}
+              <img src="{{ layout.best_medal.image.url }}"
+                   alt="{{ layout.best_medal.name }}"
+                   style="height:24px;vertical-align:middle;margin-right:.5rem;">
+            {% endif %}
+            {{ layout.best_medal.name }}
+          {% else %}
+            —
+          {% endif %}
+        </td>
+        <td>
+          {% if layout.next_medal_laptime %}
+            {{ layout.next_medal_laptime}}
           {% else %}
             —
           {% endif %}

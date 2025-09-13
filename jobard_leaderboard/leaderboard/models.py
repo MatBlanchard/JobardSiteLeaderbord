@@ -1,9 +1,11 @@
 from django.db import models
 from admin_app.models import Car, Layout, Campaign
+from django.utils import timezone
 
 class Driver(models.Model):
     id = models.IntegerField(primary_key=True)
     name = models.CharField(max_length=100, unique=True, db_index=True)
+    date_maj = models.DateTimeField(default=timezone.now, db_index=True)
 
     def __str__(self):
         return self.name
@@ -14,6 +16,7 @@ class LapTime(models.Model):
     layout = models.ForeignKey(Layout, on_delete=models.CASCADE, related_name='lap_times')
     car = models.ForeignKey(Car, on_delete=models.CASCADE,related_name='lap_times')
     lap_time_ms = models.PositiveIntegerField(help_text="Temps au tour en millisecondes")
+    date_maj = models.DateTimeField(default=timezone.now, db_index=True)
 
     class Meta:
         # Unicité du triplet driver/layout/car
@@ -25,10 +28,10 @@ class LapTime(models.Model):
         ]
         # Index utiles pour les requêtes fréquentes
         indexes = [
-            models.Index(fields=['layout', 'car']),
-            models.Index(fields=['lap_time_ms']),
+            models.Index(fields=['layout', 'car', 'lap_time_ms']),
+            models.Index(fields=['layout', 'driver', 'car', 'lap_time_ms'])
         ]
-        ordering = ['lap_time_ms', 'driver']
+        ordering = ['layout', 'car', 'lap_time_ms']
 
     def __str__(self):
         return f"{self.driver_name} • {self.layout} • {self.car} → {self.formatted_time}"
@@ -50,3 +53,12 @@ class LapTime(models.Model):
         minutes, rem_s = divmod(total_ms // 1000, 60)
         ms = total_ms % 1000
         return f"{minutes}:{rem_s:02d}.{ms:03d}"
+
+class Medal(models.Model):
+    id = models.AutoField(primary_key=True)
+    name = models.CharField(max_length=255)
+    coef =  models.FloatField(default=2)
+    image = models.ImageField(upload_to='images/', null=True, blank=True)
+
+    def __str__(self):
+        return self.name
